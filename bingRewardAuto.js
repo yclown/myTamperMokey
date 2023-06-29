@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bingrewaord_autoscript(bing积分 自动获取)
 // @namespace    https://github.com/yclown/myTamperMokey
-// @version      1.0.1
+// @version      1.0.2
 // @description  使用edge搜索，脚本会自动生成搜索字符,循环搜索直到达到指定次数，每天8点开始，次数到了之后不再搜索。按F12进入调式模式，切换成手机模式，可执行手机搜索
 // @author       yclown
 // @match        https://cn.bing.com/search?*
@@ -21,13 +21,19 @@
     var max_pc=40;
     //手机版搜索次数
     var max_ph=30;
-    GM_addStyle("#cleancount {display: flex;position: fixed;right: 30px;top: 200px;background: white;}")
+    var today=new Date().Format("yyyy-MM-dd");
+    GM_addStyle("#reward_tool {display: flex;position: fixed;right: 30px;top: 200px;background: white;}")
     var tab=document.querySelector('body');
-    var div = '<div id="cleancount">重置搜索</div>';
+    var div = '<div id="reward_tool">\
+                <a id="reward_finish">结束脚本</a><br />\
+                <a id="reward_clean">重置搜索</a>\
+                </div>';
     tab.insertAdjacentHTML('beforeend',div);	//插入元素内部的最后一个子节点之后
-    $("body").on("click","#cleancount",function(){
-        CleanCount()
-
+    $("body").on("click","#reward_clean",function(){
+        CleanCount() 
+    })
+    $("body").on("click","#reward_finish",function(){
+        Finish();
     })
 
     var timer= setInterval(function () {
@@ -90,12 +96,22 @@
     //重置按钮 显示在搜索页的右边
     function CleanCount(){
         GM_setValue("bing_reword",JSON.stringify({
-                    date:new Date().Format("yyyy-MM-dd"),
+                    date:today,
                     pc_count:0,
                     ph_count:0
                 }));
         alert("ok")
         location.reload();
+    }
+
+    function Finish(){ 
+        GM_setValue("bing_reword",JSON.stringify({
+            date:today,
+            pc_count:max_pc,
+            ph_count:30
+        }));
+        alert("ok")
+
     }
     //随机中文字符
     function randomlyGeneratedChineseCharacters(num) {
