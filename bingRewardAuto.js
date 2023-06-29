@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bingrewaord_autoscript(bing积分 自动获取)
 // @namespace    http://tampermonkey.net/
-// @version      1.0.0
+// @version      1.0.1
 // @description  使用edge搜索，脚本会自动生成搜索字符,循环搜索直到达到指定次数，每天8点开始，次数到了之后不再搜索。按F12进入调式模式，切换成手机模式，可执行手机搜索
 // @author       yclown
 // @match        https://cn.bing.com/search?*
