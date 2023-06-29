@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         bingrewaord_autoscript(bing积分 自动获取)
 // @namespace    https://github.com/yclown/myTamperMokey
-// @version      1.0.2
+// @version      1.0.3
 // @description  使用edge搜索，脚本会自动生成搜索字符,循环搜索直到达到指定次数，每天8点开始，次数到了之后不再搜索。按F12进入调式模式，切换成手机模式，可执行手机搜索
 // @author       yclown
 // @match        https://cn.bing.com/search?*
@@ -21,8 +21,8 @@
     var max_pc=40;
     //手机版搜索次数
     var max_ph=30;
-    var today=new Date().Format("yyyy-MM-dd");
-    GM_addStyle("#reward_tool {display: flex;position: fixed;right: 30px;top: 200px;background: white;}")
+   
+    GM_addStyle("#reward_tool {position: fixed;right: 30px;top: 200px;background: white;}")
     var tab=document.querySelector('body');
     var div = '<div id="reward_tool">\
                 <a id="reward_finish">结束脚本</a><br />\
@@ -143,5 +143,5 @@
         if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
         return fmt;
     }
-    
+    var today=new Date().Format("yyyy-MM-dd");
 })();
