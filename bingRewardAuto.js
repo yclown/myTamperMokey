@@ -2,7 +2,7 @@
 // @name         必应积分自动脚本（bingrewaord_autoscript）
 // @namespace    https://github.com/yclown/myTamperMokey
 // @version      1.0.3
-// @description  使用edge搜索，脚本会自动生成搜索字符,循环搜索直到达到指定次数，每天8点开始，次数到了之后不再搜索。按F12进入调式模式，切换成手机模式，可执行手机搜索
+// @description  使用edge搜索，脚本会自动生成搜索字符,循环搜索直到达到指定次数，次数到了之后不再搜索，在搜索页右边可重置或关闭脚本。按F12进入调式模式，切换成手机模式，可执行手机搜索
 // @author       yclown
 // @match        https://cn.bing.com/search?*
 // @match        https://www.bing.com/search?*
@@ -37,10 +37,10 @@
     })
 
     var timer= setInterval(function () {
-        if(new Date().getHours()<8){
-            clearInterval(timer)
-            return;
-        } 
+        // if(new Date().getHours()<8){
+        //     clearInterval(timer)
+        //     return;
+        // } 
         var _c=GetConfig(); 
         if(max_ph<=_c.ph_count&&max_pc<=_c.pc_count){
             clearInterval(timer)
