@@ -44,6 +44,7 @@
         var _c=GetConfig(); 
         if(max_ph<=_c.ph_count&&max_pc<=_c.pc_count){
             clearInterval(timer)
+            // ShowScore()
             return
         }
         if(!IsPhone()&&max_pc<=_c.pc_count){
@@ -144,4 +145,26 @@
         return fmt;
     }
     var today=new Date().Format("yyyy-MM-dd");
+
+
+    function ShowScore(){
+       
+        let myRequest = new Request('https://cn.bing.com/rewards/panelflyout/getuserinfo?channel=BingFlyout&partnerId=BingRewards'); 
+        fetch(myRequest)
+        .then(response => response.json())
+        .then(data => {
+            let datas=data.userInfo.promotions.filter(function(ele){
+                return ele.attributes.type='urlreward'&&ele.attributes.complete=="False"&&ele.attributes.hidden!='True'&&ele.attributes.max!="0"
+
+            })
+            console.log(datas)
+            for(var i in datas){
+                let p=datas[i];
+                window.open(p.attributes.destination)
+            } 
+        });
+    }
+
+
+
 })();
