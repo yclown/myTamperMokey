@@ -27,6 +27,7 @@
     var div = '<div id="reward_tool">\
                 <a id="reward_finish">结束脚本</a><br />\
                 <a id="reward_clean">重置搜索</a>\
+                <p id="reward_info"></p>\
                 </div>';
     tab.insertAdjacentHTML('beforeend',div);	//插入元素内部的最后一个子节点之后
     $("body").on("click","#reward_clean",function(){
@@ -42,6 +43,7 @@
         //     return;
         // } 
         var _c=GetConfig(); 
+        ShowInfo(_c)
         if(max_ph<=_c.ph_count&&max_pc<=_c.pc_count){
             clearInterval(timer)
             // ShowScore()
@@ -92,8 +94,19 @@
                 }
             }
         }
+
+        
         return _bingConfig;
     }
+    function ShowInfo(config){
+        var s=''
+        s+=config.pc_count<max_pc?'电脑搜索未完成':''
+        s+=config.ph_count<max_ph?'手机搜索未完成':''
+
+        
+        document.getElementById("reward_info").innerText=s; 
+    }
+
     //重置按钮 显示在搜索页的右边
     function CleanCount(){
         GM_setValue("bing_reword",JSON.stringify({
@@ -109,7 +122,7 @@
         GM_setValue("bing_reword",JSON.stringify({
             date:today,
             pc_count:max_pc,
-            ph_count:30
+            ph_count:max_ph
         }));
         alert("ok")
 
