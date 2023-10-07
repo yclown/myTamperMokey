@@ -102,7 +102,7 @@
         var s=''
         s+=config.pc_count<max_pc?'电脑搜索未完成':''
         s+=config.ph_count<max_ph?'手机搜索未完成':''
-
+        if(s=='') s='今日已完成'
         
         document.getElementById("reward_info").innerText=s; 
     }
