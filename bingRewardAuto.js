@@ -63,7 +63,7 @@
         } 
         GM_setValue("bing_reword",JSON.stringify(_c));
         document.getElementById("sb_form_go").click(); 
-    },5000)
+    },8000)
 
 
     function IsPhone() {
