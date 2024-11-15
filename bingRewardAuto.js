@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         必应积分自动脚本（Bing Rewards Script）
 // @namespace    https://github.com/yclown/myTamperMokey
-// @version      1.1.0
+// @version      1.1.1
 // @description  使用edge搜索，脚本会自动生成搜索字符,循环搜索直到达到指定次数（默认电脑端40，手机端30），次数到了之后不再搜索，在搜索页右边可重置或关闭脚本。按F12进入调式模式，切换成手机模式，可执行手机搜索
 // @author       yclown
 // @match        https://cn.bing.com/search?*
@@ -21,9 +21,8 @@
     var max_pc=40;
     //手机版搜索次数
     var max_ph=30;
-    //默认60秒一次搜索
-    var Timer=60;
-   
+    //默认30秒一次搜索
+    var Timer=30;
     GM_addStyle("#reward_tool {position: fixed;right: 30px;top: 200px;background: white;}")
     var tab=document.querySelector('body');
     var div = '<div id="reward_tool">\
