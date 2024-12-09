@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         必应积分自动脚本（Bing Rewards Script）
 // @namespace    https://github.com/yclown/myTamperMokey
-// @version      1.1.1
+// @version      1.2.0
 // @description  使用edge搜索，脚本会自动生成搜索字符,循环搜索直到达到指定次数（默认电脑端40，手机端30），次数到了之后不再搜索，在搜索页右边可重置或关闭脚本。按F12进入调式模式，切换成手机模式，可执行手机搜索
 // @author       yclown
 // @match        https://cn.bing.com/search?*
@@ -13,10 +13,29 @@
 // @grant        GM_getValue
 // @grant        GM_addStyle
 // @license      GPL
+// @downloadURL https://update.greasyfork.org/scripts/469680/%E5%BF%85%E5%BA%94%E7%A7%AF%E5%88%86%E8%87%AA%E5%8A%A8%E8%84%9A%E6%9C%AC%EF%BC%88Bing%20Rewards%20Script%EF%BC%89.user.js
+// @updateURL https://update.greasyfork.org/scripts/469680/%E5%BF%85%E5%BA%94%E7%A7%AF%E5%88%86%E8%87%AA%E5%8A%A8%E8%84%9A%E6%9C%AC%EF%BC%88Bing%20Rewards%20Script%EF%BC%89.meta.js
 // ==/UserScript==
 
 (function() {
     'use strict';
+     //日期格式化
+    Date.prototype.Format = function (fmt) {
+        var o = {
+        "M+": this.getMonth() + 1, //月份
+        "d+": this.getDate(), //日
+        "H+": this.getHours(), //小时
+        "m+": this.getMinutes(), //分
+        "s+": this.getSeconds(), //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds() //毫秒
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        return fmt;
+    }
+
     //电脑版搜索次数
     var max_pc=40;
     //手机版搜索次数
@@ -25,11 +44,13 @@
     var Timer=30;
     GM_addStyle("#reward_tool {position: fixed;right: 30px;top: 200px;background: white;}")
     var tab=document.querySelector('body');
-    var div = '<div id="reward_tool">\
-                <a id="reward_finish">结束脚本</a><br />\
-                <a id="reward_clean">重置搜索</a>\
-                <p id="reward_info"></p>\
-                </div>';
+    var countinfo=GetConfig();
+    var div = '<div id="reward_tool">'+
+                '<a id="reward_finish">结束脚本</a><br />'+
+                '<a id="reward_clean">重置搜索</a>'+
+                '<p>(电脑:'+countinfo.pc_count+',手机:'+countinfo.ph_count+')</p>'+
+                '<p id="reward_info"></p>'+
+                '</div>';
     tab.insertAdjacentHTML('beforeend',div);	//插入元素内部的最后一个子节点之后
     $("body").on("click","#reward_clean",function(){
         CleanCount() 
@@ -142,22 +163,7 @@
         let chinese = arr.join("")
         return chinese
     }
-    //日期格式化
-    Date.prototype.Format = function (fmt) {
-        var o = {
-        "M+": this.getMonth() + 1, //月份
-        "d+": this.getDate(), //日
-        "H+": this.getHours(), //小时
-        "m+": this.getMinutes(), //分
-        "s+": this.getSeconds(), //秒
-        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
-        "S": this.getMilliseconds() //毫秒
-        };
-        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-        for (var k in o)
-        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
-        return fmt;
-    }
+   
     var today=new Date().Format("yyyy-MM-dd");
 
 
