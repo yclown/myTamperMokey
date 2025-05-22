@@ -4,8 +4,9 @@
 // @version      2025-05-21
 // @description  使用方法 游览器打开https://cn.bing.com/rewards/panelflyout页面，挂机就行
 // @author       You
-// @match        https://cn.bing.com/rewards/panelflyout
-// @match        https://cn.bing.com/search?q=*
+// @match        https://cn.bing.com/rewards/panelflyout*
+// @match        https://cn.bing.com/spotlight/imagepuzzle*
+// @match        https://cn.bing.com/search*
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=bing.com
 // @grant        GM_setValue
 // @grant        GM_getValue
@@ -13,7 +14,8 @@
 
 (function() {
     'use strict';
-
+    //搜索间隔 默认60s
+    var timer=60;
      //日期格式化
     Date.prototype.Format = function (fmt) {
         var o = {
@@ -51,10 +53,19 @@
     }
     // 获取当天的积分信息
     function GetToDayRewordInfo(){
-      //以获得积分
-      var getSore=Number(document.getElementById("page_content").textContent.match(/你已获得 (\d+) 积分/)[1]) ;
-      //最大可获得积分
-      var maxSore= Number(document.getElementById("page_content").textContent.match(/每天继续搜索并获得最多 (\d+) 奖励积分/)[1]);
+      // //以获得积分
+      // var getSore=Number(document.getElementById("page_content").textContent.match(/你已获得 (\d+) 积分/)[1]) ;
+      // //最大可获得积分
+      // var maxSore= Number(document.getElementById("page_content").textContent.match(/每天继续搜索并获得最多 (\d+) 奖励积分/)[1]);
+      if(document.getElementsByClassName("daily_search_row").length==0){
+        // console.log("没有搜索积分信息");
+        return {
+          getSore: 0,
+          maxSore: 0
+        }
+      }
+      var getSore=document.getElementsByClassName("daily_search_row")[0].textContent.match(/每日搜索(\d+)\/(\d+)/)[1];
+      var maxSore=document.getElementsByClassName("daily_search_row")[0].textContent.match(/每日搜索(\d+)\/(\d+)/)[2]; 
       return {
         getSore: getSore,
         maxSore: maxSore
@@ -85,7 +96,7 @@
       } 
       
     }
-
+    
     function CheckFinish(){
       var info= GetToDayRewordInfo();
       var search_finish=info.getSore>=info.maxSore;
@@ -97,16 +108,27 @@
       }
       return false;
     }
-    function sleep(time){
-      return new Promise((resolve) => setTimeout(resolve, time));
-    }
 
     //获取可执行的任务，准备点击
-    function GetTask(){ 
-
-      return [];
+    function doTask(){ 
+      var task=document.getElementsByClassName("rw-si add")[0];
+      if(task==undefined){
+        //  console.log("没有可执行的任务");
+        return;
+      }
+      document.getElementsByClassName("rw-si add")[0].closest("a").click();
+      
+    }
+    function hasTask(){
+       var task=document.getElementsByClassName("rw-si add");
+       return task.length>0;
     }
 
+    var searchWindow = null;
+    function doSearch(){ 
+       var search_key= randomlyGeneratedChineseCharacters(parseInt(Math.random()*(5-2+1)+2))
+       searchWindow= window.open('https://cn.bing.com/search?q='+search_key,'searchWindow');
+    }
     function SendMsg(msg){
       
       channel.postMessage(msg);
@@ -137,36 +159,54 @@
           // console.log("今日已完成");
           return;
        }
-
+       
        var info= GetFinish();
        if(!info.search_finish){ 
-          SendMsg("search");
+          doSearch()
        }
- 
+       doTask();
+    }
+
+    function closeTaskWindows(){
+       try {
+        window.opener = window;
+        var win = window.open("","_self");
+        win.close();
+        //frame的时候
+        top.close();
+      } catch (e) {
+  
+      }
     }
 
     function canRun(){
       return new Date().getHours()>=8
 
     }
-    // var search_win= window.open('https://cn.bing.com/search?q='+randomlyGeneratedChineseCharacters(parseInt(Math.random()*(5-2+1)+2)));
-    
     var channel= new BroadcastChannel('myChannel');
     function Init(){
-       
-       if(window.location.href.indexOf("rewards/panelflyout") > -1){
-            run();
-            //30秒执行一次
-            setInterval(() => {
-
-                 
-                run() 
-            }, 1000*30);
-
+       if(window.location.href.indexOf("RewardsDO") > -1||window.location.href.indexOf("imagepuzzle") > -1){
+          //关闭任务页面
+          setTimeout(() => {
+            closeTaskWindows() ;
+          }, 1000);
+          
+       }else  if(window.location.href.indexOf("rewards/panelflyout") > -1){
+           
+            
+            setTimeout(() => {
+               run();
+               setTimeout(() => {
+                    window.location.reload();
+                }, 1000*timer)
+             
+            },1000);
        }else{
           
-           ListenMsg()
+          //  ListenMsg()
        }
+
+       
       
     }
     Init()
