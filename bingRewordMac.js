@@ -111,23 +111,53 @@
 
     //获取可执行的任务，准备点击
     function doTask(){ 
-      var task=document.getElementsByClassName("rw-si add")[0];
-      if(task==undefined){
+      var tasks=getTask();
+      if(tasks.length==0){
         //  console.log("没有可执行的任务");
         return;
       }
-      document.getElementsByClassName("rw-si add")[0].closest("a").click();
+      for(var i=0;i<tasks.length;i++){
+        var task=tasks[i];
+        task.click(); 
+      }
       
+    }
+
+    function getTask(){
+      var tasks= document.getElementsByClassName("rw-si add")
+      var taskList=[];
+      for(var i=0;i<tasks.length;i++){
+        var task=tasks[i].closest("a");
+        if(task.href.indexOf("form=rwfobc") > -1){
+
+          continue;
+        }
+
+        if(task.previousSibling==null){
+          taskList.push(task);
+        }
+      }
+
+      return taskList;
     }
     function hasTask(){
        var task=document.getElementsByClassName("rw-si add");
        return task.length>0;
     }
 
-    var searchWindow = null;
+    // var searchWindow = null;
     function doSearch(){ 
-       var search_key= randomlyGeneratedChineseCharacters(parseInt(Math.random()*(5-2+1)+2))
-       searchWindow= window.open('https://cn.bing.com/search?q='+search_key,'searchWindow');
+      //  var search_key= randomlyGeneratedChineseCharacters(parseInt(Math.random()*(5-2+1)+2))
+      var searchWindow= window.open('https://cn.bing.com','searchWindow');
+
+
+     setTimeout(() => {
+          searchWindow.document.getElementById("sb_form_q").value=randomlyGeneratedChineseCharacters(parseInt(Math.random()*(5-2+1)+2));
+       
+          searchWindow.document.getElementById("sb_form_go").click(); 
+      }, 3*1000); 
+      
+
     }
     function SendMsg(msg){
       
@@ -151,12 +181,12 @@
     
     function run(){
         if(!canRun()){
-            // console.log("不在可执行时间内");
+            console.log("不在可执行时间内");
             return;
         }
 
        if(CheckFinish()){
-          // console.log("今日已完成");
+          console.log("今日已完成");
           return;
        }
        
@@ -185,6 +215,7 @@
     }
     var channel= new BroadcastChannel('myChannel');
     function Init(){
+       
        if(window.location.href.indexOf("RewardsDO") > -1||window.location.href.indexOf("imagepuzzle") > -1){
           //关闭任务页面
           setTimeout(() => {
@@ -192,15 +223,23 @@
           }, 1000);
           
        }else  if(window.location.href.indexOf("rewards/panelflyout") > -1){
-           
-            
-            setTimeout(() => {
-               run();
-               setTimeout(() => {
-                    window.location.reload();
-                }, 1000*timer)
+            if(window.frameElement && window.frameElement.tagName === 'IFRAME'){
+              return;
+            }
+
+            run();
+
+            setInterval(() => {
+              run();
+            }, 1000*timer);
+
+            // setTimeout(() => {
+               
+            //    setTimeout(() => {
+            //         window.location.reload();
+            //     }, 1000*timer)
              
-            },1000);
+            // },1000);
        }else{
           
           //  ListenMsg()
