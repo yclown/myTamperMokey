@@ -58,14 +58,14 @@
       // //最大可获得积分
       // var maxSore= Number(document.getElementById("page_content").textContent.match(/每天继续搜索并获得最多 (\d+) 奖励积分/)[1]);
       if(document.getElementsByClassName("daily_search_row").length==0){
-        // console.log("没有搜索积分信息");
+        console.log("没有搜索积分信息");
         return {
           getSore: 0,
           maxSore: 0
         }
       }
-      var getSore=document.getElementsByClassName("daily_search_row")[0].textContent.match(/每日搜索(\d+)\/(\d+)/)[1];
-      var maxSore=document.getElementsByClassName("daily_search_row")[0].textContent.match(/每日搜索(\d+)\/(\d+)/)[2]; 
+      var getSore=Number( document.getElementsByClassName("daily_search_row")[0].textContent.match(/每日搜索(\d+)\/(\d+)/)[1]);
+      var maxSore=Number(document.getElementsByClassName("daily_search_row")[0].textContent.match(/每日搜索(\d+)\/(\d+)/)[2]); 
       return {
         getSore: getSore,
         maxSore: maxSore
@@ -99,14 +99,11 @@
     
     function CheckFinish(){
       var info= GetToDayRewordInfo();
-      var search_finish=info.getSore>=info.maxSore;
+      console.log("获取到的积分信息",info);
+      return info.getSore>=info.maxSore;
         
-      if(search_finish){
-        SaveFinish(true);
-        return true;
-
-      }
-      return false;
+      
+      
     }
 
     //获取可执行的任务，准备点击
