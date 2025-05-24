@@ -113,10 +113,11 @@
         //  console.log("没有可执行的任务");
         return;
       }
-      for(var i=0;i<tasks.length;i++){
-        var task=tasks[i];
-        task.click(); 
-      }
+      tasks[0].click();
+      // for(var i=0;i<tasks.length;i++){
+      //   var task=tasks[i];
+      //   task.click(); 
+      // }
       
     }
 
