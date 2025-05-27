@@ -110,7 +110,7 @@
     function doTask(){ 
       var tasks=getTask();
       if(tasks.length==0){
-        //  console.log("没有可执行的任务");
+        console.log("没有可执行的任务");
         return;
       }
       tasks[0].click();
@@ -131,7 +131,7 @@
           continue;
         }
 
-        if(task.previousSibling==null){
+        if(task.previousSibling==null||task.previousSibling.className == "unlocked_tooltip"){
           taskList.push(task);
         }
       }
@@ -146,7 +146,7 @@
     // var searchWindow = null;
     function doSearch(){ 
       //  var search_key= randomlyGeneratedChineseCharacters(parseInt(Math.random()*(5-2+1)+2))
-      var searchWindow= window.open('https://cn.bing.com','searchWindow');
+      var searchWindow= window.open('https://cn.bing.com/search?q=%E5%BE%AE%E8%BD%AF%E7%A7%AF%E5%88%86&qs=n&form=QBRE&sp=-1&lq=0&pq=%E5%BE%AE%E8%BD%AFji%27fen&sc=12-8&sk=&cvid=4038A0AD7F734C0C83FD61119FD6F67A','searchWindow');
 
 
      setTimeout(() => {
@@ -191,6 +191,7 @@
        var info= GetFinish();
        if(!info.search_finish){ 
           doSearch()
+          // SendMsg("search");
        }
        doTask();
     }
@@ -208,7 +209,7 @@
     }
 
     function canRun(){
-      return new Date().getHours()>=8
+      return new Date().getHours()>=7
 
     }
     var channel= new BroadcastChannel('myChannel');
@@ -240,7 +241,7 @@
             // },1000);
        }else{
           
-          //  ListenMsg()
+            ListenMsg()
        }
 
        
