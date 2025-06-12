@@ -153,6 +153,12 @@
           searchWindow.document.getElementById("sb_form_q").value=randomlyGeneratedChineseCharacters(parseInt(Math.random()*(5-2+1)+2));
        
           searchWindow.document.getElementById("sb_form_go").click(); 
+
+          setTimeout(() => {
+            searchWindow.close();
+            // SendMsg("search");
+          }, 5*1000);
+
       }, 3*1000); 
       
 
@@ -228,20 +234,20 @@
 
             run();
 
-            setInterval(() => {
-              run();
-            }, 1000*timer);
+            // setInterval(() => {
+            //   run();
+            // }, 1000*timer);
 
-            // setTimeout(() => {
+            setTimeout(() => {
                
-            //    setTimeout(() => {
-            //         window.location.reload();
-            //     }, 1000*timer)
+               setTimeout(() => {
+                    window.location.reload();
+                }, 1000*timer)
              
-            // },1000);
+            },2000);
        }else{
           
-            ListenMsg()
+            // ListenMsg()
        }
 
        
