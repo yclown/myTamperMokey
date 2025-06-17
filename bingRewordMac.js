@@ -111,14 +111,14 @@
       var tasks=getTask();
       if(tasks.length==0){
         console.log("没有可执行的任务");
-        return;
+        return false;
       }
       tasks[0].click();
       // for(var i=0;i<tasks.length;i++){
       //   var task=tasks[i];
       //   task.click(); 
       // }
-      
+      return true;
     }
 
     function getTask(){
@@ -139,7 +139,7 @@
       return taskList;
     }
     function hasTask(){
-       var task=document.getElementsByClassName("rw-si add");
+       var task=getTask();
        return task.length>0;
     }
 
@@ -194,12 +194,16 @@
           return;
        }
        
+        if(doTask()){
+          return;
+        }
+
        var info= GetFinish();
        if(!info.search_finish){ 
           doSearch()
           // SendMsg("search");
        }
-       doTask();
+       
     }
 
     function closeTaskWindows(){
