@@ -184,26 +184,27 @@
     }
     
     function run(){
-        if(!canRun()){
-            console.log("不在可执行时间内");
-            return;
-        }
+        // if(!canRun()){
+        //     console.log("不在可执行时间内");
+        //     return false;
+        // }
 
        if(CheckFinish()){
           console.log("今日已完成");
-          return;
+          return false;
        }
        
         if(doTask()){
-          return;
+          return  true;
         }
 
        var info= GetFinish();
        if(!info.search_finish){ 
           doSearch()
           // SendMsg("search");
+          return true;
        }
-       
+       return false;
     }
 
     function closeTaskWindows(){
@@ -223,6 +224,9 @@
 
     }
     var channel= new BroadcastChannel('myChannel');
+    var noRun=0;
+    var max_noRun=60;
+
     function Init(){
        
        if(window.location.href.indexOf("RewardsDO") > -1||window.location.href.indexOf("imagepuzzle") > -1){
@@ -237,18 +241,27 @@
             }
 
             run();
-
-            // setInterval(() => {
-            //   run();
-            // }, 1000*timer);
-
-            setTimeout(() => {
-               
-               setTimeout(() => {
+            
+            setInterval(() => {
+              var isrun= run();
+              if(!isrun){
+                 noRun++;
+                 if(noRun>=max_noRun){
+                    console.log("连续X次没有可执行任务，刷新页面");
                     window.location.reload();
-                }, 1000*timer)
+                 }
+                 console.log("没有可执行任务，循环");
+              }
+
+            }, 1000*timer);
+
+            // setTimeout(() => {
+               
+            //    setTimeout(() => {
+            //         window.location.reload();
+            //     }, 1000*timer)
              
-            },2000);
+            // },2000);
        }else{
           
             // ListenMsg()
