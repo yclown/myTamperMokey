@@ -97,7 +97,7 @@
       
     }
     
-    function CheckFinish(){
+    function IsSearchFinish(){
       var info= GetToDayRewordInfo();
       console.log("获取到的积分信息",info);
       return info.getSore>=info.maxSore;
@@ -184,22 +184,13 @@
     }
     
     function run(){
-        // if(!canRun()){
-        //     console.log("不在可执行时间内");
-        //     return false;
-        // }
-
-       if(CheckFinish()){
-          console.log("今日已完成");
-          return false;
-       }
        
         if(doTask()){
           return  true;
         }
 
        var info= GetFinish();
-       if(!info.search_finish){ 
+       if(!IsSearchFinish()){ 
           doSearch()
           // SendMsg("search");
           return true;
