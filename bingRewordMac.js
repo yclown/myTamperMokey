@@ -184,7 +184,11 @@
     }
     
     function run(){
-       
+        if(!canRun()){
+          console.log("当前时间不允许运行");
+          return false;
+        } 
+
         if(doTask()){
           return  true;
         }
