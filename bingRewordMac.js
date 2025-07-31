@@ -47,9 +47,9 @@
         return chinese
     }
 
-    function Search(){ 
+    function Search(){
       document.getElementById("sb_form_q").value=randomlyGeneratedChineseCharacters(parseInt(Math.random()*(5-2+1)+2));
-      document.getElementById("sb_form_go").click(); 
+      document.getElementById("sb_form_go").click();
     }
     // 获取当天的积分信息
     function GetToDayRewordInfo(){
@@ -65,49 +65,49 @@
         }
       }
       var getSore=Number( document.getElementsByClassName("daily_search_row")[0].textContent.match(/每日搜索(\d+)\/(\d+)/)[1]);
-      var maxSore=Number(document.getElementsByClassName("daily_search_row")[0].textContent.match(/每日搜索(\d+)\/(\d+)/)[2]); 
+      var maxSore=Number(document.getElementsByClassName("daily_search_row")[0].textContent.match(/每日搜索(\d+)\/(\d+)/)[2]);
       return {
         getSore: getSore,
         maxSore: maxSore
       }
     }
-    
-    function SaveFinish(isFinish){ 
+
+    function SaveFinish(isFinish){
       var date = new Date();
       var dateStr = date.Format("yyyy-MM-dd");
       var data = {
-        date: dateStr, 
+        date: dateStr,
         isFinish: isFinish
       };
       GM_setValue("rewordInfo", JSON.stringify(data));
       return data;
     }
-    function GetFinish(){ 
+    function GetFinish(){
       var data=GM_getValue("rewordInfo");
       if(data==undefined){
-        return SaveFinish(false); 
+        return SaveFinish(false);
       }else{
         data=JSON.parse(data);
         if(data.date!=new Date().Format("yyyy-MM-dd")){
-          return SaveFinish(false); 
+          return SaveFinish(false);
         }else{
           return data;
         }
-      } 
-      
+      }
+
     }
-    
-    function IsSearchFinish(){
+
+    function CheckFinish(){
       var info= GetToDayRewordInfo();
       console.log("获取到的积分信息",info);
       return info.getSore>=info.maxSore;
-        
-      
-      
+
+
+
     }
 
     //获取可执行的任务，准备点击
-    function doTask(){ 
+    function doTask(){
       var tasks=getTask();
       if(tasks.length==0){
         console.log("没有可执行的任务");
@@ -116,7 +116,7 @@
       tasks[0].click();
       // for(var i=0;i<tasks.length;i++){
       //   var task=tasks[i];
-      //   task.click(); 
+      //   task.click();
       // }
       return true;
     }
@@ -144,27 +144,27 @@
     }
 
     // var searchWindow = null;
-    function doSearch(){ 
+    function doSearch(){
       //  var search_key= randomlyGeneratedChineseCharacters(parseInt(Math.random()*(5-2+1)+2))
       var searchWindow= window.open('https://cn.bing.com/search?q=%E5%BE%AE%E8%BD%AF%E7%A7%AF%E5%88%86&qs=n&form=QBRE&sp=-1&lq=0&pq=%E5%BE%AE%E8%BD%AFji%27fen&sc=12-8&sk=&cvid=4038A0AD7F734C0C83FD61119FD6F67A','searchWindow');
 
 
      setTimeout(() => {
           searchWindow.document.getElementById("sb_form_q").value=randomlyGeneratedChineseCharacters(parseInt(Math.random()*(5-2+1)+2));
-       
-          searchWindow.document.getElementById("sb_form_go").click(); 
+
+          searchWindow.document.getElementById("sb_form_go").click();
 
           setTimeout(() => {
             searchWindow.close();
             // SendMsg("search");
           }, 5*1000);
 
-      }, 3*1000); 
-      
+      }, 3*1000);
+
 
     }
     function SendMsg(msg){
-      
+
       channel.postMessage(msg);
     }
     function ListenMsg(){
@@ -174,27 +174,33 @@
             console.log("触发搜索");
             Search();
             break;
-         
+
           default:
             console.log("未知消息");
         }
-         
+
       };
       console.log("监听消息中...");
     }
-    
+
     function run(){
         if(!canRun()){
-          console.log("当前时间不允许运行");
-          return false;
-        } 
+            console.log("不在可执行时间内");
+            return false;
+        }
+
+       
 
         if(doTask()){
           return  true;
         }
 
+        if(CheckFinish()){
+          console.log("今日已完成");
+          return false;
+       }
        var info= GetFinish();
-       if(!IsSearchFinish()){ 
+       if(!info.search_finish){
           doSearch()
           // SendMsg("search");
           return true;
@@ -210,7 +216,7 @@
         //frame的时候
         top.close();
       } catch (e) {
-  
+
       }
     }
 
@@ -223,20 +229,20 @@
     var max_noRun=60;
 
     function Init(){
-       
+
        if(window.location.href.indexOf("RewardsDO") > -1||window.location.href.indexOf("imagepuzzle") > -1){
           //关闭任务页面
           setTimeout(() => {
             closeTaskWindows() ;
           }, 1000);
-          
+
        }else  if(window.location.href.indexOf("rewards/panelflyout") > -1){
             if(window.frameElement && window.frameElement.tagName === 'IFRAME'){
               return;
             }
 
             run();
-            
+
             setInterval(() => {
               var isrun= run();
               if(!isrun){
@@ -250,22 +256,14 @@
 
             }, 1000*timer);
 
-            // setTimeout(() => {
-               
-            //    setTimeout(() => {
-            //         window.location.reload();
-            //     }, 1000*timer)
-             
-            // },2000);
        }else{
-          
-            // ListenMsg()
+
        }
 
-       
-      
+
+
     }
     Init()
-    
-    
+
+
 })();
